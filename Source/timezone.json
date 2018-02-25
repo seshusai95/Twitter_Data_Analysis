@@ -1,0 +1,9 @@
+[
+
+	{"time_zone":"Eastern Time Zone","cnt":5390},
+	{"time_zone":"Singapore","cnt":575},
+	{"time_zone":"Mumbai","cnt":88},
+	{"time_zone":"Alaska","cnt":408},
+	{"time_zone":"Central Time Zone","cnt":2108},
+	{"time_zone":"Pacific Time Zone","cnt":1833}
+]

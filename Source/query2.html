@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Tweet Analayzer</title>
+    <meta content='width=device-width, initial-scale=1' name='viewport'/>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js" type="text/javascript"></script>
+    <script src="ajaxGetPost.js" type="text/javascript"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script>
+        function charts(data,ChartType)
+        {
+            var c=ChartType;
+            var jsonData=data;
+            google.load("visualization", "1", {packages:["corechart"], callback: drawVisualization});
+            function drawVisualization()
+            {
+                var data = new google.visualization.DataTable();
+                data.addColumn('string', 'year');
+                data.addColumn('number', 'count');
+                $.each(jsonData, function(i,jsonData)
+                {
+                    var value=jsonData.count;
+                    var name=jsonData.year;
+                    data.addRows([ [name, value]]);
+                });
+
+                var options = {
+                    title : "Count of individuals who created twitter accounts per year",
+                    colorAxis: {colors: ['#54C492', '#cc0000']},
+                    datalessRegionColor: '#dedede',
+                    defaultColor: '#dedede',
+                    pieHole: 0.4,
+                };
+
+                var chart;
+                if(c=="ColumnChart")
+                    chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+                else if(c=="PieChart")
+                    chart = new google.visualization.PieChart(document.getElementById('piechart_div'));
+                else if(c=="BarChart")
+                    chart = new google.visualization.BarChart(document.getElementById('bar_div'));
+                else if(c=="GeoChart")
+                    chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
+                else if(c="CandleChart")
+                    var chart = new google.visualization.CandlestickChart(document.getElementById('candle_div'));
+
+                chart.draw(data, options);
+
+
+            }
+        }
+
+        $(document).ready(function ()
+        {
+            url='accounts.json';
+            ajax_data('GET',url, function(data)
+            {
+                charts(data,"ColumnChart");
+                charts(data,"PieChart");
+                charts(data,"BarChart");
+                charts(data,"GeoChart");
+                charts(data,"CandleChart");
+            });
+        });
+    </script>
+    <style>
+        body{font-family:arial}
+    </style>
+</head>
+<body style="text-align:center">
+
+<div id="piechart_div" style="width: 900px; height: 500px;"></div>
+<p style="background-color:gray;color:black;font-size:15px"> <b>Donut Chart showing count of individuals who created twitter accounts per year</b> <br>
+</p>
+</body>
+</html>

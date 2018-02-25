@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Tweet Analayzer</title>
+    <meta content='width=device-width, initial-scale=1' name='viewport'/>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js" type="text/javascript"></script>
+    <script src="ajaxGetPost.js" type="text/javascript"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script>
+        function charts(data,ChartType)
+        {
+            var c=ChartType;
+            var jsonData=data;
+            google.load("visualization", "1", {packages:["corechart"], callback: drawVisualization});
+            function drawVisualization()
+            {
+                var data = new google.visualization.DataTable();
+                data.addColumn('string', 'Location');
+                data.addColumn('number', 'Popularity');
+                $.each(jsonData, function(i,jsonData)
+                {
+                    var value=jsonData.count;
+                    var name=jsonData.word;
+                    data.addRows([ [name, value]]);
+                });
+
+                var options = {
+                    title : "Number of hashtags on a particular word",
+                    colorAxis: {colors: ['#54C492', '#cc0000']},
+                    datalessRegionColor: '#dedede',
+                    defaultColor: '#dedede'
+                };
+
+                var chart;
+                if(c=="ColumnChart")
+                    chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+                else if(c=="PieChart")
+                    chart = new google.visualization.PieChart(document.getElementById('piechart_div'));
+                else if(c=="BarChart")
+                    chart = new google.visualization.BarChart(document.getElementById('bar_div'));
+                else if(c=="GeoChart")
+                    chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
+
+                chart.draw(data, options);
+            }
+        }
+
+        $(document).ready(function ()
+        {
+            url='location.json';
+            ajax_data('GET',url, function(data)
+            {
+                charts(data,"ColumnChart");
+                charts(data,"PieChart");
+                charts(data,"BarChart");
+                charts(data,"GeoChart");
+            });
+        });
+    </script>
+    <style>
+        body{font-family:arial}
+    </style>
+</head>
+<body style="text-align:center">
+<div id="piechart_div" style="width: 900px; height: 450px;">
+
+</div>
+<p style="background-color:gray;color:black;font-size:15px"> <b>Pie chart showing number of hashtags on different words</b> <br>
+</p>
+
+</body>
+</html>
